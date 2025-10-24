@@ -9,6 +9,7 @@
 // @grant       GM_setClipboard
 // @grant       GM_download
 // @downloadURL https://raw.githubusercontent.com/downwarjers/UserScripts/main/ACGSecretsBangumiCopy/ACGSecretsBangumiCopy.user.js
+// @updateURL   https://raw.githubusercontent.com/downwarjers/UserScripts/main/ACGSecretsBangumiCopy/ACGSecretsBangumiCopy.user.js
 // ==/UserScript==
 
 (function() {

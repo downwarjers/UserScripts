@@ -8,6 +8,7 @@
 // @match        https://www.youtube.com/*
 // @grant        GM_addStyle
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/YoutubeNotifitionBatchSetting/YoutubeNotifitionBatchSetting.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/YoutubeNotifitionBatchSetting/YoutubeNotifitionBatchSetting.user.js
 // ==/UserScript==
 
 (function() {

@@ -8,6 +8,7 @@
 // @match        *://www.bilibili.com/*
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/BilibiliVideoNegativeColor/BilibiliVideoNegativeColor.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/BilibiliVideoNegativeColor/BilibiliVideoNegativeColor.user.js
 // ==/UserScript==
 
 (function () {

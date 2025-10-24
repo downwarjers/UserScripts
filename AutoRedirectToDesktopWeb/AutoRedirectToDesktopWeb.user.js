@@ -9,6 +9,7 @@
 // @run-at       document-start
 // @grant        none
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/AutoRedirectToDesktopWeb/AutoRedirectToDesktopWeb.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/AutoRedirectToDesktopWeb/AutoRedirectToDesktopWeb.user.js
 // ==/UserScript==
 
 (function() {

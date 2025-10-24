@@ -9,6 +9,7 @@
 // @grant        none
 // @run-at       document-idle
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/VPNGateTableFilter/VPNGateTableFilter.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/VPNGateTableFilter/VPNGateTableFilter.user.js
 // ==/UserScript==
 
 (function() {

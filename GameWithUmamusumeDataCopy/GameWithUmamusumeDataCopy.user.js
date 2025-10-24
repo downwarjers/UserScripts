@@ -8,6 +8,7 @@
 // @match        https://gamewith.jp/uma-musume/*
 // @grant        GM_setClipboard
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/GameWithUmamusumeDataCopy/GameWithUmamusumeDataCopy.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/GameWithUmamusumeDataCopy/GameWithUmamusumeDataCopy.user.js
 // ==/UserScript==
 
 (function() {
