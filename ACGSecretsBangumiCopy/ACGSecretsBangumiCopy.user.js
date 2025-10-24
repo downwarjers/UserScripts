@@ -18,6 +18,7 @@
     const numPlus = num + '+';
     const fullNum = `[${num}]`;
 
+    // 內容續作作品模式：明確的數字或季數標示
     const contentSequelPatterns = [
         new RegExp(`第\\s*${numPlus}\\s*(季|部分|期|季度)`, 'i'),
         new RegExp(`Season\\s*${numPlus}`, 'i'),
