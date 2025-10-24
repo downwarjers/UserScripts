@@ -8,6 +8,7 @@
 // @match       https://acgsecrets.hk/bangumi/*
 // @grant       GM_setClipboard
 // @grant       GM_download
+// @downloadURL https://github.com/downwarjers/UserScripts/raw/refs/heads/main/ACGSecretsBangumiCopy/ACGSecretsBangumiCopy.user.js
 // ==/UserScript==
 
 (function() {

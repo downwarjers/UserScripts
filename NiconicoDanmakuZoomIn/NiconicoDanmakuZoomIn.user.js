@@ -7,6 +7,7 @@
 // @license     MIT
 // @match       https://www.nicovideo.jp/watch/*
 // @grant       none
+// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/NiconicoDanmakuZoomIn/NiconicoDanmakuZoomIn.user.js
 // ==/UserScript==
 
 (function() {

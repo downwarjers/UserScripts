@@ -8,6 +8,7 @@
 // @match        *://www.twitch.tv/*
 // @grant        none
 // @run-at       document-idle
+// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/TwitchDateConverter/TwitchDateConverter.user.js
 // ==/UserScript==
 
 (function() {
