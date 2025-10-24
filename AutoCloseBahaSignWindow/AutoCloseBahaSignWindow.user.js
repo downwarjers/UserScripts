@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         巴哈姆特動畫瘋 - 自動關閉簽到視窗
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      1.1
+// @version      1.2.1
 // @description  偵測並自動關閉 ani.gamer.com.tw 上的彈出視窗 (dialogify_1)
 // @author       downwarjers
 // @license      MIT

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch 精確日期轉換器
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      1.5
+// @version      1.5.1
 // @description  使用 Twitch 原始時間戳將所有日期轉換為 yyyy-MM-dd 格式
 // @author       downwarjers
 // @license      MIT

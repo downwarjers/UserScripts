@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Mobile→Desktop Redirect (Enhanced)
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      1.1
+// @version      1.1.1
 // @description  自動將手機版網址跳轉至桌面版。
 // @author       downwarjers
 // @license      MIT

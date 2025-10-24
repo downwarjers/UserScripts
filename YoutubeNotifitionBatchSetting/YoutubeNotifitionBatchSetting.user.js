@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube - Advanced Batch Channel Notifier (Dynamic Scroll)
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      2.2
+// @version      2.2.1
 // @description  Adds a control panel to batch-set channel notifications. Uses dynamic scroll-wait (up to 60s). USE AT YOUR OWN RISK.
 // @author       downwarjers
 // @license      MIT

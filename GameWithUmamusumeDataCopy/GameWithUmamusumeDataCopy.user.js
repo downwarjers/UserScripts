@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GameWith ウマ娘 選擇資料匯出
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      1.2
+// @version      1.2.1
 // @description  抓取 Gamewith 賽馬娘頁面上選取的資料，依 H2 標題分類，並提供複製與下載功能。
 // @author       downwarjers
 // @license      MIT
