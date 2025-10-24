@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         VPN Gate Table Sort
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      2.1
+// @version      2.1.1
 // @description  Adds controls to switch between sorting by Speed (Mbps).
 // @author       downwarjers
 // @license      MIT

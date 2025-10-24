@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BOOKWALKER 跨頁面批量加入購物車 (自動過濾已購/已在購物車) - 全自動靜默結帳版
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      2.33
+// @version      2.33.1
 // @description  【V2.33】導入結帳後導航邏輯 (handlePostCheckoutNavigation)，修復 V2.32 結帳後跳轉首頁導致流程中斷的問題。
 // @author       downwarjers
 // @license      MIT

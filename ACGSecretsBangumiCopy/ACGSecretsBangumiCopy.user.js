@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        ACGSecrets Bangumi 分類抓取
 // @namespace   https://github.com/downwarjers/UserScripts
-// @version     2.3
+// @version     2.3.1
 // @description 優先判斷跨季/家長指引與續作/新作的組合，再依據單一Tag和名稱判斷。分為八類。
 // @author      downwarjers
 // @license     MIT

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Niconico Danmaku Canvas Scaler (with scaling context)
 // @namespace   https://github.com/downwarjers/UserScripts
-// @version     1.1
+// @version     1.1.1
 // @description Adjust Niconico danmaku font size by scaling canvas resolution and context.
 // @author      downwarjers
 // @license     MIT

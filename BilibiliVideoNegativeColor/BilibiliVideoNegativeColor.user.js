@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bilibili Video Fix Negative Color
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      1.3
+// @version      1.3.1
 // @description  Bilibili影片負片反轉，並將開關整合到播放器「其他設置」中
 // @author       downwarjers
 // @license      MIT
