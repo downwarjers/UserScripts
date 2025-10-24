@@ -8,7 +8,7 @@
 // @match        https://ani.gamer.com.tw/*
 // @grant        none
 // @run-at       document-body
-// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/AutoCloseBahaSignWindow/AutoCloseBahaSignWindow.user.js
+// @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/AutoCloseBahaSignWindow/AutoCloseBahaSignWindow.user.js
 // ==/UserScript==
 
 (function() {

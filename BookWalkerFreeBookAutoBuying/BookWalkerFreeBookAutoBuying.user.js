@@ -11,7 +11,7 @@
 // @grant        GM_deleteValue
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
 // @run-at       document-start
-// @downloadURL https://github.com/downwarjers/UserScripts/raw/refs/heads/main/BookWalkerFreeBookAutoBuying/BookWalkerFreeBookAutoBuying.user.js
+// @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/BookWalkerFreeBookAutoBuying/BookWalkerFreeBookAutoBuying.user.js
 // ==/UserScript==
 
 /* global $, window, document, localStorage, sessionStorage, alert, location */
