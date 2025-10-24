@@ -19,6 +19,7 @@
 // @connect      ja.wikipedia.org
 // @noframes
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/BahaAnimeInfoMod/BahaAnimeInfoMod.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/BahaAnimeInfoMod/BahaAnimeInfoMod.user.js
 // ==/UserScript==
 
 //---------------------External libarary---------------------//

@@ -9,6 +9,7 @@
 // @grant        none
 // @run-at       document-body
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/AutoCloseBahaSignWindow/AutoCloseBahaSignWindow.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/AutoCloseBahaSignWindow/AutoCloseBahaSignWindow.user.js
 // ==/UserScript==
 
 (function() {

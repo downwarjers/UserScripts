@@ -12,6 +12,7 @@
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
 // @run-at       document-start
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/BookWalkerFreeBookAutoBuying/BookWalkerFreeBookAutoBuying.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/BookWalkerFreeBookAutoBuying/BookWalkerFreeBookAutoBuying.user.js
 // ==/UserScript==
 
 /* global $, window, document, localStorage, sessionStorage, alert, location */

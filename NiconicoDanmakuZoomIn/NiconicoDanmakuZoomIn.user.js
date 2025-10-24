@@ -8,6 +8,7 @@
 // @match       https://www.nicovideo.jp/watch/*
 // @grant       none
 // @downloadURL https://raw.githubusercontent.com/downwarjers/UserScripts/main/NiconicoDanmakuZoomIn/NiconicoDanmakuZoomIn.user.js
+// @updateURL   https://raw.githubusercontent.com/downwarjers/UserScripts/main/NiconicoDanmakuZoomIn/NiconicoDanmakuZoomIn.user.js
 // ==/UserScript==
 
 (function() {

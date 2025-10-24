@@ -9,6 +9,7 @@
 // @grant        none
 // @run-at       document-idle
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/TwitchDateConverter/TwitchDateConverter.user.js
+// @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/TwitchDateConverter/TwitchDateConverter.user.js
 // ==/UserScript==
 
 (function() {
