@@ -8,7 +8,7 @@
 // @match        *://www.vpngate.net/*
 // @grant        none
 // @run-at       document-idle
-// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/VPNGateTableFilter/VPNGateTableFilter.user.js
+// @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/VPNGateTableFilter/VPNGateTableFilter.user.js
 // ==/UserScript==
 
 (function() {

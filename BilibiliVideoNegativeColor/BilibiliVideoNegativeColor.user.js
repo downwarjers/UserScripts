@@ -7,7 +7,7 @@
 // @license      MIT
 // @match        *://www.bilibili.com/*
 // @grant        none
-// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/BilibiliVideoNegativeColor/BilibiliVideoNegativeColor.user.js
+// @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/BilibiliVideoNegativeColor/BilibiliVideoNegativeColor.user.js
 // ==/UserScript==
 
 (function () {

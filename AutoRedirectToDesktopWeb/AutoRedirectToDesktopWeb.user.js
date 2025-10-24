@@ -8,7 +8,7 @@
 // @match        *://*/*
 // @run-at       document-start
 // @grant        none
-// @downloadURL https://github.com/downwarjers/UserScripts/raw/refs/heads/main/AutoRedirectToDesktopWeb/AutoRedirectToDesktopWeb.user.js
+// @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/AutoRedirectToDesktopWeb/AutoRedirectToDesktopWeb.user.js
 // ==/UserScript==
 
 (function() {

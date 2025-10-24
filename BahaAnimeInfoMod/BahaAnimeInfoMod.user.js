@@ -18,7 +18,7 @@
 // @connect      acg.gamer.com.tw
 // @connect      ja.wikipedia.org
 // @noframes
-// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/BahaAnimeInfoMod/BahaAnimeInfoMod.user.js
+// @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/BahaAnimeInfoMod/BahaAnimeInfoMod.user.js
 // ==/UserScript==
 
 //---------------------External libarary---------------------//

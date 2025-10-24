@@ -7,7 +7,7 @@
 // @license      MIT
 // @match        https://gamewith.jp/uma-musume/*
 // @grant        GM_setClipboard
-// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/GameWithUmamusumeDataCopy/GameWithUmamusumeDataCopy.user.js
+// @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/GameWithUmamusumeDataCopy/GameWithUmamusumeDataCopy.user.js
 // ==/UserScript==
 
 (function() {
