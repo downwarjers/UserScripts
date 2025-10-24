@@ -7,6 +7,7 @@
 // @license      MIT
 // @match        https://www.youtube.com/*
 // @grant        GM_addStyle
+// @downloadURL  https://github.com/downwarjers/UserScripts/raw/refs/heads/main/YoutubeNotifitionBatchSetting/YoutubeNotifitionBatchSetting.user.js
 // ==/UserScript==
 
 (function() {
