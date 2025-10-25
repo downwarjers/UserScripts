@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name         巴哈姆特動畫瘋 - 自動關閉簽到視窗
+// @name         巴哈姆特 - 自動關閉簽到視窗
 // @namespace    https://github.com/downwarjers/UserScripts
-// @version      1.2.1
-// @description  偵測並自動關閉 ani.gamer.com.tw 上的彈出視窗 (dialogify_1)
+// @version      1.3
+// @description  偵測並自動關閉 gamer.com.tw 網站上的彈出視窗 (dialogify_1)
 // @author       downwarjers
 // @license      MIT
-// @match        https://ani.gamer.com.tw/*
+// @match        https://*.gamer.com.tw/*
 // @grant        none
 // @run-at       document-body
 // @downloadURL  https://raw.githubusercontent.com/downwarjers/UserScripts/main/AutoCloseBahaSignWindow/AutoCloseBahaSignWindow.user.js
@@ -15,7 +15,7 @@
 (function() {
     'use strict';
 
-    // 您提供的元素特徵
+    // 元素特徵
     const dialogId = 'dialogify_1';
     const closeButtonClass = 'dialogify__close';
 
@@ -29,7 +29,7 @@
 
         // 如果找到了按鈕
         if (closeButton) {
-            console.log('偵測到巴哈動畫瘋彈出視窗，自動點擊關閉...');
+            console.log('偵測到巴哈彈出視窗，自動點擊關閉...');
             closeButton.click(); // 模擬點擊
 
             // 任務完成，停止監聽，節省資源
