@@ -3,7 +3,7 @@
 // @description  在動畫瘋中自動擷取動畫常見相關資訊，如CAST以及主題曲。支援多季度/Part分頁顯示
 // @namespace    nathan60107
 // @author       nathan60107(貝果) [Modified by downwarjers]
-// @version      1.1.3-mod~1
+// @version      1.1.3-mod~2
 // @homepage     https://home.gamer.com.tw/creationCategory.php?owner=nathan60107&c=425332
 // @match        https://ani.gamer.com.tw/animeVideo.php?sn=*
 // @icon         https://ani.gamer.com.tw/apple-touch-icon-144.jpg
@@ -306,7 +306,7 @@ function parseSyoboiDataFromHtml(syoboiHtml) {
   let dom = $($.parseHTML(syoboiHtml));
   let title = syoboiHtml.match(/<title>([^<]*)<\/title>/)[1];
 
-  // 依照您的思路，抓取 h1 標題，並移除內部的 span (clone, children, remove, end)
+  //抓取 h1 標題，並移除內部的 span (clone, children, remove, end)
   let h1Title = dom.find('h1').clone().children().remove().end().text().trim();
 
   let cast = []
@@ -861,6 +861,10 @@ async function masterMain() {
         }
         // else: 標題不是以 baseTitle 開頭 (例如 "Re:ゼロ... 3rd season")，忽略
       });
+
+      // [*** 已修改 ***]
+      // 在迴圈結束後，將陣列反轉，使其從舊到新排列
+      relatedParts.reverse();
 
       if (relatedParts.length > 0) {
         changeState('loading', { total: allResults.length + relatedParts.length, fetched: allResults.length });
