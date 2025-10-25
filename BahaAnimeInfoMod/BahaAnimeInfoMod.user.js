@@ -3,7 +3,7 @@
 // @description  在動畫瘋中自動擷取動畫常見相關資訊，如CAST以及主題曲。支援多季度/Part分頁顯示
 // @namespace    nathan60107
 // @author       nathan60107(貝果) [Modified by downwarjers]
-// @version      1.1.3-mod~2
+// @version      1.1.4-mod
 // @homepage     https://home.gamer.com.tw/creationCategory.php?owner=nathan60107&c=425332
 // @match        https://ani.gamer.com.tw/animeVideo.php?sn=*
 // @icon         https://ani.gamer.com.tw/apple-touch-icon-144.jpg
@@ -36,10 +36,16 @@ let dd = (...d) => {
   d.forEach((it) => { console.log(it) })
 }
 
+/**
+ * @param { string } pattern 
+ */
 function regexEscape(pattern) {
   return pattern.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1')
 }
 
+/**
+ * @returns { Promise<boolean> }
+ */
 async function isPrivateFF() {
   return new Promise((resolve) => {
     detectIncognito().then((result) => {
@@ -49,11 +55,17 @@ async function isPrivateFF() {
   })
 }
 
+/**
+ * @param { string } title 
+ */
 function titleProcess(title) {
   if (!title) return '';
   return title.replaceAll('-', '\\-').replaceAll('#', '')
 }
 
+/**
+ * @param { string } time 
+ */
 function timeProcess(time) {
   if (!time || time === '不明') return null
   let match = time.match(/([0-9]{4})-([0-9]{2})-([0-9]{2})/)
@@ -66,7 +78,6 @@ function timeProcess(time) {
   ]
 }
 
-// 1.1.3 原函數
 async function getBahaData() {
   let bahaDbUrl = $('a:contains(作品資料)')[0].href
   let bahaHtml = $((await GET(bahaDbUrl)).responseText)
@@ -85,12 +96,16 @@ async function getBahaData() {
   }
 }
 
-// 1.1.3 原函數
+/**
+ * @param { string } url 
+ * @returns { Tampermonkey.Response<string> }
+ */
 async function GET(url) {
   return new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       method: "GET",
       url: url,
+      /** @param { Tampermonkey.Response<string> } response */
       onload: (response) => {
         resolve(response)
       },
@@ -99,7 +114,12 @@ async function GET(url) {
   })
 }
 
-// 1.1.3 原函數
+/**
+ * @param { string } url 
+ * @param { Record<string, unknown> } payload 
+ * @param { Tampermonkey.RequestHeaders } headers 
+ * @returns { Tampermonkey.Response<string> }
+ */
 async function POST(url, payload, headers = {}) {
   let data = new URLSearchParams(payload).toString()
   return new Promise((resolve, reject) => {
@@ -110,6 +130,7 @@ async function POST(url, payload, headers = {}) {
       headers: {
         ...headers
       },
+      /** @param { Tampermonkey.Response<string> } response */
       onload: (response) => {
         resolve(response)
       },
@@ -120,7 +141,6 @@ async function POST(url, payload, headers = {}) {
   })
 }
 
-// 1.1.3 原函數
 function getJson(str) {
   try {
     return JSON.parse(str)
@@ -129,8 +149,15 @@ function getJson(str) {
   }
 }
 
-// 1.1.3 原函數
+/**
+ * @param { 'syoboi' | 'allcinema' } type 
+ * @param { string } keyword 
+ * @returns { Promise<string> }
+ */
 async function google(type, keyword) {
+  // [MODIFIED] 
+  if (keyword === '') return ''
+
   let site = ''
   let match = ''
   switch (type) {
@@ -151,7 +178,7 @@ async function google(type, keyword) {
 
   let googleHtml = (await GET(googleUrl)).responseText
   if (googleHtml.includes('為何顯示此頁')) throw { type: 'google', url: googleUrl }
-  let googleResult = $($.parseHTML(googleHtml)).find('#res .v7W49e a')
+  let googleResult = $($.parseHTML(googleHtml)).find('#res .v7W49e a') // <--- 修改版的選擇器
   for (let goo of googleResult) {
     let link = goo.href.replace('http://', 'https://')
     if (link.match(match)) return link
@@ -159,8 +186,11 @@ async function google(type, keyword) {
   return ''
 }
 
-// 1.1.3 原函數 (增加防護)
+/**
+ * @returns { Promise<string> }
+ */
 async function searchSyoboi() {
+  // [MODIFIED] 
   let { site, time, fullUrl } = bahaData
   if (!site || !time) return ''
 
@@ -192,7 +222,7 @@ async function searchSyoboi() {
   let syoboiResults = $($.parseHTML(syoboiHtml)).find('.tframe td')
   for (let result of syoboiResults) {
     let resultTimeEl = $(result).find('.findComment')[0]
-    if (!resultTimeEl) continue;
+    if (!resultTimeEl) continue; // <--- 增加的防護
     let resultTime = resultTimeEl.innerText
 
     if (time.some(t => resultTime.includes(t))) {
@@ -203,7 +233,9 @@ async function searchSyoboi() {
   return ''
 }
 
-// 1.1.3 原函數
+/**
+ * @param { string } type 
+ */
 function songType(type) {
   type = type.toLowerCase().replace('section ', '')
   switch (type) {
@@ -219,8 +251,21 @@ function songType(type) {
   }
 }
 
-// 1.1.3 原函數 (增加防護)
+/**
+ * @typedef AniResponse
+ * @property { string } source
+ * @property { string } title
+ * @property { Record<'char' | 'cv', string> } cast
+ * @property { Record<'type' | 'title' | 'singer', string> } song
+*/
+/**
+ * @param { boolean } [jpTitle=true]
+ * @returns { Promise<AniResponse | null> }
+ */
 async function getAllcinema(jpTitle = true) {
+  // [REPLACED] 接收 boolean
+  // 函數內部呼叫 google()
+  // 增加防護 (guard clauses)
   changeState('allcinema')
 
   let animeName = jpTitle ? bahaData.nameJp : bahaData.nameEn
@@ -298,9 +343,9 @@ async function getAllcinema(jpTitle = true) {
 
 /**
  * [NEW]
- * 輔助函數：從 Syoboi HTML 中解析資料
+ * 從 Syoboi HTML 中解析資料
  * @param {string} syoboiHtml - 頁面 HTML
- * @returns {object} - { title, h1Title, cast, song }
+ * @returns {{ title: string, h1Title: string, cast: AniResponse['cast'], song: AniResponse['song'] }}
  */
 function parseSyoboiDataFromHtml(syoboiHtml) {
   let dom = $($.parseHTML(syoboiHtml));
@@ -336,12 +381,13 @@ function parseSyoboiDataFromHtml(syoboiHtml) {
 }
 
 /**
- * [MODIFIED]
- * 修改 1.1.3 的 getSyoboi，使其回傳更多資訊
- * @param {boolean} searchGoogle
- * @returns {object|null} - { source, title, h1Title, cast, song, rawHtml }
+ * @param { boolean } [searchGoogle=false]
+ * @returns { Promise<AniResponse & { h1Title: string, rawHtml: string } | null> }
  */
 async function getSyoboi(searchGoogle = false) {
+  // [REPLACED] 接收 boolean
+  // 函數內部呼叫 google()
+  // 回傳包含 rawHtml 和 h1Title 的物件，供 masterMain() 解析
   changeState('syoboi')
 
   let nameJp = bahaData.nameJp
@@ -361,9 +407,9 @@ async function getSyoboi(searchGoogle = false) {
 
 /**
  * [NEW]
- * 輔助函數：直接抓取並解析一個指定的 Syoboi URL
+ * 抓取並解析 Syoboi URL
  * @param {string} syoboiUrl 
- * @returns {object|null}
+ * @returns { Promise<AniResponse & { h1Title: string } | null> }
  */
 async function getSyoboiData(syoboiUrl) {
   try {
@@ -379,7 +425,16 @@ async function getSyoboiData(syoboiUrl) {
   }
 }
 
-// 1.1.3 原函數
+/**
+ * @param { AniResponse['cast'] } json
+ * @returns {{
+ * query: {
+ * pages: Record<number, { pageid: number, title: string, langlinks?: { lang: string, '*': string }[], pageprops?: { disambiguation: string }  }>
+ * normalized: Record<number, { from: string, to: string }>
+ * redirects: Record<number, { from: string, to: string }>
+ * }
+ * }}
+ */
 async function searchWiki(json) {
   let searchWikiUrl = (nameList) => {
     let wikiUrlObj = new URL('https://ja.wikipedia.org/w/api.php')
@@ -421,8 +476,13 @@ async function searchWiki(json) {
   return result
 }
 
-// 1.1.3 原函數 (增加防護)
+/**
+ * @param { AniResponse['cast'] } json 
+ * @returns { string }
+ */
 async function getCastHtml(json) {
+  // [MODIFIED]
+  // 增加防護
   function replaceEach(array, getFrom = (it) => it.from, getTo = (it) => it.to) {
     array?.forEach((it) => {
       json.forEach((j, index) => {
@@ -434,8 +494,8 @@ async function getCastHtml(json) {
   }
 
   if (!json || json.length === 0) return '';
-  let castJson = _.cloneDeep(json);
-
+  let castJson = _.cloneDeep(json); // <--- 使用 cloneDeep 避免汙染
+  
   let wikiJson = await searchWiki(castJson)
   let disamb = _.filter(wikiJson.query.pages, ['pageprops', { disambiguation: '' }])
   let normalized = wikiJson.query.normalized
@@ -456,21 +516,26 @@ async function getCastHtml(json) {
     let wikiPage = _.filter(wikiJson.query.pages, page =>
       page.title === j.cv || page.title === j.cvName2
     )[0]
-    let zhName = wikiPage?.langlinks?.[0]['*']
+    let zhName = wikiPage?.langlinks?.[0]['*'] // <--- 防護
     let wikiUrl = zhName ? `https://zh.wikipedia.org/zh-tw/${zhName}` : `https://ja.wikipedia.org/wiki/${j.cvName2 ?? j.cv}`
     let wikiText = zhName ? 'Wiki' : 'WikiJP'
 
     return `
       <div>${j.char ?? ''}</div>
       <div>${j.cv}</div>
-      ${(wikiPage?.missing === '' || !wikiPage)
+      ${(wikiPage?.missing === '' || !wikiPage) // <--- 防護
         ? '<div></div>'
         : `<a href="${wikiUrl}" target="_blank">🔗${wikiText}</a>`}
   `}).join('')
 }
 
-// 1.1.3 原函數 (增加防護)
+/**
+ * @param { AniResponse['song'] } json 
+ * @returns { string }
+ */
 function getSongHtml(json) {
+  // [MODIFIED] 來自 BahaAnimeInfoMod.user.js
+  // 增加防護
   if (!json || json.length === 0) return '';
   return json.map(j => `
     <div>${j.type}${j.title}</div>
@@ -481,8 +546,12 @@ function getSongHtml(json) {
   `).join('')
 }
 
-// 1.1.3 原函數 (增加 Tab CSS)
+/**
+ * @returns { string }
+ */
 function getCss() {
+  // [REPLACED]
+  // 增加 /* [NEW] Tab CSS */ 區塊
   return `
     /* Old baha CSS */
     .data_type {
@@ -592,10 +661,10 @@ function getCss() {
 }
 
 /**
- * [NEW]
- * 輔助函數：專門用於渲染一個分頁內容的非同步函數
+ * [NEW] 
+ * 渲染分頁內容
  * @param {jQuery} paneElement - 要填入內容的 pane div
- * @param {object} data - 該分頁的 result data
+ * @param {AniResponse} data - 該分頁的 result data
  */
 async function renderPaneContent(paneElement, data) {
   if (paneElement.data('loaded')) return; // 防止重複載入
@@ -640,10 +709,34 @@ async function renderPaneContent(paneElement, data) {
 
 
 /**
- * [MODIFIED]
- * 修改 1.1.3 的 changeState 以支援分頁
+ * @overload
+ * @param { 'init' | 'btn' | 'syoboi' | 'allcinema' | 'debug' } state
+ * @return { Promise<void> }
+ * @overload
+ * @param { 'google' } state
+ * @param { { url: string } } params
+ * @return { Promise<void> }
+ * @overload
+ * @param { 'fail' } state
+ * @param { { error: Error | string } } params
+ * @return { Promise<void> }
+ * @overload
+ * @param { 'loading' } state
+ * @param { { fetched: number, total: number } } params
+ * @return { Promise<void> }
+ * @overload
+ * @param { 'result' } state
+ * @param { AniResponse } params
+ * @return { Promise<void> }
+ * @overload
+ * @param { 'tabResult' } state
+ * @param { Array<{ title: string, data: AniResponse & { h1Title: string }, error?: string }> } params
+ * @return { Promise<void> }
  */
 async function changeState(state, params) {
+  // [REPLACED]
+  // 增加了 'loading' 和 'tabResult' 狀態
+  // 修改了 'allcinema' 和 'result' 狀態的提示訊息
   switch (state) {
     case 'init':
       $('.anime-option').append(`
@@ -676,7 +769,7 @@ async function changeState(state, params) {
       $('#ani-info-msg').html(`嘗試取得 syoboi 資料中...`)
       break
     case 'allcinema':
-      $('#ani-info-msg').html(`(Syoboi 失敗) 嘗試取得 allcinema 資料中...`)
+      $('#ani-info-msg').html(`(Syoboi 失敗) 嘗試取得 allcinema 資料中...`) // <--- 修改的訊息
       break
     case 'loading': // [NEW]
       $('#ani-info-msg').html(`抓取 Syoboi 相關資料中... (已完成 ${params.fetched || 0} / 共 ${params.total})`)
@@ -685,7 +778,7 @@ async function changeState(state, params) {
       $('#ani-info-msg').html(`無法取得資料 ${params.error}`)
       break
     case 'result': {
-      // 這是為 1.1.3 Fallback (allcinema) 準備的單頁面渲染
+      // 1.1.3 Fallback (allcinema) 單頁面渲染
       let castHtml = await getCastHtml(params.cast)
       let songHtml = getSongHtml(params.song)
       $('#ani-info').html('')
@@ -712,7 +805,7 @@ async function changeState(state, params) {
             資料來源：<a href="${params.source}" target="_blank">${params.title}</a> (Syoboi 查無資料，顯示 allcinema 結果)
           </li>
         </ul>
-      `)
+      `) // <--- 修改的訊息
       break
     }
     case 'tabResult': { // [NEW] 渲染分頁 UI
@@ -770,7 +863,7 @@ async function changeState(state, params) {
       break;
     }
     case 'debug': {
-      // 1.1.3 原函數
+      // 1.1.3/1.1.4 的 debug 函數
       let aaa = await getSyoboi()
       let bbb = await getSyoboi(true)
       let ccc = await getAllcinema()
@@ -798,8 +891,8 @@ async function changeState(state, params) {
 }
 
 /**
- * [MODIFIED]
- * 修改 1.1.3 的 main 函數，使其成為 masterMain
+ * [REPLACED] 
+ * 取代原版main()
  */
 async function masterMain() {
   let debug = false
@@ -825,13 +918,13 @@ async function masterMain() {
       allResults.push({ title: initialResult.h1Title, data: initialResult });
       processedUrls.add(initialResult.source);
 
-      // 2. 解析相關 Part (依照您的思路)
+      // 2. 解析相關 Part
       let dom = $($.parseHTML(initialResult.rawHtml));
       let h1Title = initialResult.h1Title; // 乾淨的 h1 標題
       
-      // [MODIFIED V1.6.0]
-      // 不再使用 split(' ')[0]。直接使用完整的 H1 標題作為比對基準。
-      let baseTitle = h1Title; // <-- 這是 V1.6.0 的修正
+      // [MODIFIED]
+      // 使用完整 H1 標題作為比對基準。
+      let baseTitle = h1Title;
       
       let relatedParts = [];
 
@@ -845,9 +938,9 @@ async function masterMain() {
 
         let linkTitle = element.text().trim();
         
-        // [MODIFIED V1.6.0] 篩選邏輯：標題必須以 "完整的 H1 標題" 開頭
+        // [MODIFIED] 篩選邏輯：標題必須以 "完整的 H1 標題" 開頭
         if (linkTitle.startsWith(baseTitle)) {
-          if (a.length) { // 這是 <a> 連結，不是當前頁
+          if (a.length) { // <a> 連結
             let linkHref = a.attr('href');
             let url = new URL(linkHref, 'https://cal.syoboi.jp/').href;
 
@@ -859,11 +952,11 @@ async function masterMain() {
           }
           // else: 這是 <span class="selected">，是當前頁 (linkTitle === baseTitle)，已在 processedUrls 中，忽略
         }
-        // else: 標題不是以 baseTitle 開頭 (例如 "Re:ゼロ... 3rd season")，忽略
+        // else: 標題不是以 baseTitle 開頭，忽略
       });
 
-      // [*** 已修改 ***]
-      // 在迴圈結束後，將陣列反轉，使其從舊到新排列
+      // [[MODIFIED]
+      // 陣列反轉，使其從舊到新排列
       relatedParts.reverse();
 
       if (relatedParts.length > 0) {
@@ -906,7 +999,6 @@ async function masterMain() {
   }
 }
 
-// 1.1.3 原函數 (修改 main 為 masterMain)
 (async function () {
   globalThis.bahaData = await getBahaData()
   changeState('init')
@@ -922,7 +1014,7 @@ async function masterMain() {
   });
 
   // Do task or set button to wait for click and do task.
-  if (isAuto) masterMain() // [MODIFIED]
+  if (isAuto) masterMain() // [MODIFIED] 呼叫新的 masterMain
   else changeState('btn')
 })();
 
@@ -933,6 +1025,6 @@ async function masterMain() {
  * [Detect browser private mode](https://stackoverflow.com/a/69678895/13069889)
  * [and its cdn](https://cdn.jsdelivr.net/gh/Joe12387/detectIncognito@main/detectIncognito.min.js)
  * [FF observe GM request](https://firefox-source-docs.mozilla.org/devtools-user/browser_toolbox/index.html)
- * [Wiki API](https://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:ApiSandbox#action=query&format=json&prop=langlinks%7Cpageprops&titles=%E6%A2%B6%E5%8E%9F%E5%B2%B3%E4%BA%BA%7C%E5%B0%8F%E6%9E%97%E8%A3%95%E4%BB%8B%7C%E4%B8%AD%E4%BA%95%E5%92%8C%E5%93%89%7CM%E3%83%BBA%E3%83%BBO%7C%E9%88%B4%E6%9D%91%E5%81%A5%E4%B8%80%7C%E4%B8%8A%E6%A2%9D%E6%B2%99%E6%81_B3%E5%AD%90%7C%E6%A5_A0%E5_A4%A7%E5_85%B8%7C%E8_88%88%E6_B4_A5%E5_92%8C%E5_B9_B8%7C%E6_97_A5%E9_87_8E%E8_81_A1%7C%E9_96_A2%E6_99_BA%E4_B8_80%7C%E6_82_A0%E6_9C_A8%E7_A2%A7%7C%E5_89_8D%E9_87_8E%E6_99_BA%E6_98_AD&redirects=1&lllang=zh&lllimit=100&ppprop=disambiguation)
+ * [Wiki API](https://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:ApiSandbox#action=query&format=json&prop=langlinks%7Cpageprops&titles=%E6%A2%B6%E5%8E%9F%E5%B2%B3%E4%BA%BA%7C%E5%B0%8F%E6%9E%97%E8%A3%95%E4%BB%8B%7C%E4%B8%AD%E4%BA%95%E5%92%8C%E5%93%89%7CM%E3%83%BBA%E3%83%BBO%7C%E9%88%B4%E6%9D%91%E5%81%A5%E4%B8%80%7C%E4%B8%8A%E6%A2%9D%E6%B2%99%E6%81_B3%E5%AD%90%7C%E6%A5_A0%E5_A4%A7%E5_85%B8%7C%E8_88%88%E6_B4_A5%E5_92%8C%E5_B9_B8%7C%E6_97_A5%E9_87_8E%E8_81_A1%7C%E9_96_A2%E6_99_BA%E4%B8_80%7C%E6_82_A0%E6_9C_A8%E7_A2%A7%7C%E5_89_8D%E9_87_8E%E6_99_BA%E6%98_AD&redirects=1&lllang=zh&lllimit=100&ppprop=disambiguation)
  * [Always use en/decodeURIComponent](https://stackoverflow.com/a/747845)
  */
