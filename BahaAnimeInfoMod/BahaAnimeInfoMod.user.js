@@ -22,6 +22,7 @@
 // @updateURL    https://raw.githubusercontent.com/downwarjers/UserScripts/main/BahaAnimeInfoMod/BahaAnimeInfoMod.user.js
 // ==/UserScript==
 
+
 //---------------------External libarary---------------------//
 /**
  *
@@ -172,20 +173,17 @@ async function google(type, keyword) {
       match = /https:\/\/www\.allcinema\.net\/cinema\/([0-9]{1,7})/
       break
   }
-// 在呼叫端組合完整的搜尋字串
-//   let date = bahaData.time;
-//   let fullQuery = `intitle:"${keyword}" intext:"${date}"`;
+  //  let fullQuery = `intitle:"${keyword}" intext:"${onAirMonth}" `;
   let fullQuery = `intitle:"${keyword}"`;
-
+  
   let googleUrlObj = new URL('https://www.google.com/search?as_qdr=all&as_occt=any')
   googleUrlObj.searchParams.append('as_q', fullQuery)
   googleUrlObj.searchParams.append('as_sitesearch', site)
   let googleUrl = googleUrlObj.toString()
-  console.log('animeinfo:',googleUrl)
-  console.log('animeinfo baha.time:',bahaData.time)
+
   let googleHtml = (await GET(googleUrl)).responseText
   if (googleHtml.includes('為何顯示此頁')) throw { type: 'google', url: googleUrl }
-  let googleResult = $($.parseHTML(googleHtml)).find('#res span a') // <--- 修改版的選擇器
+  let googleResult = $($.parseHTML(googleHtml)).find('#res span a')
   for (let goo of googleResult) {
     let link = goo.href.replace('http://', 'https://')
     if (link.match(match)) return link
@@ -398,6 +396,7 @@ async function getSyoboi(searchGoogle = false) {
   changeState('syoboi')
 
   let animeName = bahaData.nameJp ? bahaData.nameJp : bahaData.nameEn
+  if (animeName === '') return null
   let syoboiUrl = await (searchGoogle ? google('syoboi', animeName) : searchSyoboi())
   if (!syoboiUrl) return null
 
@@ -582,10 +581,19 @@ function getCss() {
       border-radius: 4px;
       text-align: center;
     }
-    /* CSS for anigamerinfo+ */
-    #ani-info {
-      display: flex;
+
+    /* CSS for anigamerinfo+ content */
+    #ani-info .ani-tab-pane {
+      display: none; /* Default hidden */
+      animation: fadeIn 0.3s;
+    }
+    #ani-info .ani-tab-pane.active {
+      display: flex; /* Show active */
       flex-direction: column;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     #ani-info .grid {
       display: grid;
@@ -605,7 +613,7 @@ function getCss() {
       grid-template-columns: repeat(3, auto);
     }
     
-    /* [NEW] Tab CSS */
+    /* CSS for anigamerinfo+ tabs */
     #ani-info .ani-info-tabs {
       display: flex;
       flex-wrap: wrap;
@@ -629,17 +637,6 @@ function getCss() {
     #ani-info .ani-tab-btn.active {
       color: var(--text-default-color);
       border-bottom: 3px solid rgb(51, 145, 255);
-    }
-    #ani-info .ani-tab-pane {
-      display: none; /* Default hidden */
-      animation: fadeIn 0.3s;
-    }
-    #ani-info .ani-tab-pane.active {
-      display: block; /* Show active */
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
     }
     
     /* CSS for anigamer */
@@ -919,6 +916,7 @@ async function masterMain() {
         initialResult = await getSyoboi(true);
       }
     }
+
     if (initialResult) {
       // --- Syoboi 成功路徑 ---
 
