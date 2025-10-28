@@ -79,6 +79,14 @@ function timeProcess(time) {
   ]
 }
 
+function extractYearMonth(time) {
+  if (!time || time === '不明') return null;
+  let match = time.match(/([0-9]{4})-([0-9]{2})/);
+  if (!match) return null;
+  let [, year, month] = match;
+  return `${year}-${month}`;
+}
+
 async function getBahaData() {
   let bahaDbUrl = $('a:contains(作品資料)')[0].href
   let bahaHtml = $((await GET(bahaDbUrl)).responseText)
@@ -95,6 +103,7 @@ async function getBahaData() {
     site: fullUrl ? new URL(fullUrl).hostname.replace('www.', '') : '',
     fullUrl: fullUrl,
     time: timeProcess(time),
+    onAirMonth: extractYearMonth(time),
     broadcast: broadcast,
   }
 }
@@ -157,7 +166,7 @@ function getJson(str) {
  * @param { string } keyword 
  * @returns { Promise<string> }
  */
-async function google(type, keyword) {
+async function google(type, keyword, onAirMonth) {
   // [MODIFIED] 
   if (keyword === '') return ''
 
@@ -173,8 +182,7 @@ async function google(type, keyword) {
       match = /https:\/\/www\.allcinema\.net\/cinema\/([0-9]{1,7})/
       break
   }
-  //  let fullQuery = `intitle:"${keyword}" intext:"${onAirMonth}" `;
-  let fullQuery = `intitle:"${keyword}"`;
+  let fullQuery = `intitle:${keyword} intext:${onAirMonth}`;
   
   let googleUrlObj = new URL('https://www.google.com/search?as_qdr=all&as_occt=any')
   googleUrlObj.searchParams.append('as_q', fullQuery)
@@ -275,7 +283,7 @@ async function getAllcinema(jpTitle = true) {
 
   let animeName = jpTitle ? bahaData.nameJp : bahaData.nameEn
   if (animeName === '') return null
-  let allcinemaUrl = await google('allcinema', animeName)
+  let allcinemaUrl = await google('allcinema', animeName, bahaData.onAirMonth)
   if (!allcinemaUrl) return null
 
   let allcinemaIdMatch = allcinemaUrl.match(/https:\/\/www\.allcinema\.net\/cinema\/([0-9]{1,7})/)
@@ -397,7 +405,7 @@ async function getSyoboi(searchGoogle = false) {
 
   let animeName = bahaData.nameJp ? bahaData.nameJp : bahaData.nameEn
   if (animeName === '') return null
-  let syoboiUrl = await (searchGoogle ? google('syoboi', animeName) : searchSyoboi())
+  let syoboiUrl = await (searchGoogle ? google('syoboi', animeName, bahaData.onAirMonth) : searchSyoboi())
   if (!syoboiUrl) return null
 
   let syoboiHtml = (await GET(syoboiUrl)).responseText
