@@ -3,7 +3,7 @@
 // @description  在動畫瘋中自動擷取動畫常見相關資訊，如CAST以及主題曲。支援多季度/Part分頁顯示
 // @namespace    nathan60107
 // @author       nathan60107(貝果) [Modified by downwarjers]
-// @version      1.1.4-mod
+// @version      1.1.4.2
 // @homepage     https://home.gamer.com.tw/creationCategory.php?owner=nathan60107&c=425332
 // @match        https://ani.gamer.com.tw/animeVideo.php?sn=*
 // @icon         https://ani.gamer.com.tw/apple-touch-icon-144.jpg
@@ -83,6 +83,7 @@ async function getBahaData() {
   let bahaHtml = $((await GET(bahaDbUrl)).responseText)
   let nameJp = bahaHtml.find('.ACG-info-container > h2')[0].innerText
   let nameEn = bahaHtml.find('.ACG-info-container > h2')[1].innerText
+  let broadcast = bahaHtml.find('.ACG-box1listA > li:contains("播映方式")')[0]?.innerText
   let urlObj = new URL(bahaHtml.find('.ACG-box1listB > li:contains("官方網站") > a')[0]?.href ?? 'https://empty')
   let fullUrl = urlObj.searchParams.get('url')
   let time = bahaHtml.find('.ACG-box1listA > li:contains("當地")')[0]?.innerText?.split('：')[1]
@@ -93,6 +94,7 @@ async function getBahaData() {
     site: fullUrl ? new URL(fullUrl).hostname.replace('www.', '') : '',
     fullUrl: fullUrl,
     time: timeProcess(time),
+    broadcast: broadcast,
   }
 }
 
@@ -178,7 +180,7 @@ async function google(type, keyword) {
 
   let googleHtml = (await GET(googleUrl)).responseText
   if (googleHtml.includes('為何顯示此頁')) throw { type: 'google', url: googleUrl }
-  let googleResult = $($.parseHTML(googleHtml)).find('#res .v7W49e a') // <--- 修改版的選擇器
+  let googleResult = $($.parseHTML(googleHtml)).find('#res span a') // <--- 修改版的選擇器
   for (let goo of googleResult) {
     let link = goo.href.replace('http://', 'https://')
     if (link.match(match)) return link
@@ -390,9 +392,8 @@ async function getSyoboi(searchGoogle = false) {
   // 回傳包含 rawHtml 和 h1Title 的物件，供 masterMain() 解析
   changeState('syoboi')
 
-  let nameJp = bahaData.nameJp
-  if (nameJp === '') return null
-  let syoboiUrl = await (searchGoogle ? google('syoboi', nameJp) : searchSyoboi())
+let animeName = bahaData.nameJp ? bahaData.nameJp : bahaData.nameEn
+  let syoboiUrl = await (searchGoogle ? google('syoboi', animeName) : searchSyoboi())
   if (!syoboiUrl) return null
 
   let syoboiHtml = (await GET(syoboiUrl)).responseText
@@ -906,11 +907,14 @@ async function masterMain() {
     let processedUrls = new Set(); // [NEW] 用於全局防止重複
 
     // 1. [Syoboi-First] 嘗試抓取 Syoboi
-    let initialResult = await getSyoboi(false);
-    if (!initialResult) {
-      initialResult = await getSyoboi(true);
-    }
+    let initialResult
 
+    if (bahaData.broadcast && bahaData.broadcast.includes('電視')){
+      initialResult = await getSyoboi(false);
+      if (!initialResult) {
+        initialResult = await getSyoboi(true);
+      }
+    }
     if (initialResult) {
       // --- Syoboi 成功路徑 ---
 
@@ -1018,6 +1022,7 @@ async function masterMain() {
   else changeState('btn')
 })();
 
+
 /**
  * Reference:
  * [Write userscript in VSC](https://stackoverflow.com/a/55568568)
@@ -1025,6 +1030,6 @@ async function masterMain() {
  * [Detect browser private mode](https://stackoverflow.com/a/69678895/13069889)
  * [and its cdn](https://cdn.jsdelivr.net/gh/Joe12387/detectIncognito@main/detectIncognito.min.js)
  * [FF observe GM request](https://firefox-source-docs.mozilla.org/devtools-user/browser_toolbox/index.html)
- * [Wiki API](https://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:ApiSandbox#action=query&format=json&prop=langlinks%7Cpageprops&titles=%E6%A2%B6%E5%8E%9F%E5%B2%B3%E4%BA%BA%7C%E5%B0%8F%E6%9E%97%E8%A3%95%E4%BB%8B%7C%E4%B8%AD%E4%BA%95%E5%92%8C%E5%93%89%7CM%E3%83%BBA%E3%83%BBO%7C%E9%88%B4%E6%9D%91%E5%81%A5%E4%B8%80%7C%E4%B8%8A%E6%A2%9D%E6%B2%99%E6%81_B3%E5%AD%90%7C%E6%A5_A0%E5_A4%A7%E5_85%B8%7C%E8_88%88%E6_B4_A5%E5_92%8C%E5_B9_B8%7C%E6_97_A5%E9_87_8E%E8_81_A1%7C%E9_96_A2%E6_99_BA%E4%B8_80%7C%E6_82_A0%E6_9C_A8%E7_A2%A7%7C%E5_89_8D%E9_87_8E%E6_99_BA%E6%98_AD&redirects=1&lllang=zh&lllimit=100&ppprop=disambiguation)
+ * [Wiki API](https://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:ApiSandbox#action=query&format=json&prop=langlinks%7Cpageprops&titles=%E6%A2%B6%E5%8E%9F%E5%B2%B3%E4%BA%BA%7C%E5%B0%8F%E6%9E%97%E8%A3%95%E4%BB%8B%7C%E4%B8%AD%E4%BA%95%E5%92%8C%E5%93%89%7CM%E3%83%BBA%E3%83%BBO%7C%E9%88%B4%E6%9D%91%E5%81%A5%E4%B8%80%7C%E4%B8%8A%E6%A2%9D%E6%B2%99%E6%81%B5%E5%AD%90%7C%E6%A5%A0%E5%A4%A7%E5%85%B8%7C%E8%88%88%E6%B4%A5%E5%92%8C%E5%B9%B8%7C%E6%97%A5%E9%87%8E%E8%81%A1%7C%E9%96%A2%E6%99%BA%E4%B8%80%7C%E6%82%A0%E6%9C%A8%E7%A2%A7%7C%E5%89%8D%E9%87%8E%E6%99%BA%E6%98%AD&redirects=1&lllang=zh&lllimit=100&ppprop=disambiguation)
  * [Always use en/decodeURIComponent](https://stackoverflow.com/a/747845)
  */
