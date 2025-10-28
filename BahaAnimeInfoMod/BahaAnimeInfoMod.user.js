@@ -172,12 +172,17 @@ async function google(type, keyword) {
       match = /https:\/\/www\.allcinema\.net\/cinema\/([0-9]{1,7})/
       break
   }
+// 在呼叫端組合完整的搜尋字串
+//   let date = bahaData.time;
+//   let fullQuery = `intitle:"${keyword}" intext:"${date}"`;
+  let fullQuery = `intitle:"${keyword}"`;
 
   let googleUrlObj = new URL('https://www.google.com/search?as_qdr=all&as_occt=any')
-  googleUrlObj.searchParams.append('as_q', keyword)
+  googleUrlObj.searchParams.append('as_q', fullQuery)
   googleUrlObj.searchParams.append('as_sitesearch', site)
   let googleUrl = googleUrlObj.toString()
-
+  console.log('animeinfo:',googleUrl)
+  console.log('animeinfo baha.time:',bahaData.time)
   let googleHtml = (await GET(googleUrl)).responseText
   if (googleHtml.includes('為何顯示此頁')) throw { type: 'google', url: googleUrl }
   let googleResult = $($.parseHTML(googleHtml)).find('#res span a') // <--- 修改版的選擇器
@@ -392,7 +397,7 @@ async function getSyoboi(searchGoogle = false) {
   // 回傳包含 rawHtml 和 h1Title 的物件，供 masterMain() 解析
   changeState('syoboi')
 
-let animeName = bahaData.nameJp ? bahaData.nameJp : bahaData.nameEn
+  let animeName = bahaData.nameJp ? bahaData.nameJp : bahaData.nameEn
   let syoboiUrl = await (searchGoogle ? google('syoboi', animeName) : searchSyoboi())
   if (!syoboiUrl) return null
 
@@ -908,7 +913,6 @@ async function masterMain() {
 
     // 1. [Syoboi-First] 嘗試抓取 Syoboi
     let initialResult
-
     if (bahaData.broadcast && bahaData.broadcast.includes('電視')){
       initialResult = await getSyoboi(false);
       if (!initialResult) {
