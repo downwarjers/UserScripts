@@ -103,7 +103,7 @@ async function getBahaData() {
     site: fullUrl ? new URL(fullUrl).hostname.replace('www.', '') : '',
     fullUrl: fullUrl,
     time: timeProcess(time),
-    onAirMonth: extractYearMonth(time),
+    onAirYearMonth: extractYearMonth(time),
     broadcast: broadcast,
   }
 }
@@ -166,25 +166,28 @@ function getJson(str) {
  * @param { string } keyword 
  * @returns { Promise<string> }
  */
-async function google(type, keyword, onAirMonth) {
+async function google(type, keyword, onAirYearMonth) {
   // [MODIFIED] 
   if (keyword === '') return ''
 
   let site = ''
   let match = ''
+  let fullQuery = '';
   switch (type) {
     case 'syoboi':
       site = 'https://cal.syoboi.jp/tid'
       match = 'https://cal.syoboi.jp/tid'
+      fullQuery = `intitle:${keyword} intext:${onAirYearMonth}`;
       break
     case 'allcinema':
       site = 'https://www.allcinema.net/cinema/'
       match = /https:\/\/www\.allcinema\.net\/cinema\/([0-9]{1,7})/
+      fullQuery = `intitle:${keyword}`;
       break
   }
-  let fullQuery = `intitle:${keyword} intext:${onAirMonth}`;
   
   let googleUrlObj = new URL('https://www.google.com/search?as_qdr=all&as_occt=any')
+  // googleUrlObj.searchParams.append('as_q', keyword)
   googleUrlObj.searchParams.append('as_q', fullQuery)
   googleUrlObj.searchParams.append('as_sitesearch', site)
   let googleUrl = googleUrlObj.toString()
@@ -203,7 +206,6 @@ async function google(type, keyword, onAirMonth) {
  * @returns { Promise<string> }
  */
 async function searchSyoboi() {
-  // [MODIFIED] 
   let { site, time, fullUrl } = bahaData
   if (!site || !time) return ''
 
@@ -212,6 +214,7 @@ async function searchSyoboi() {
     'tbs.co.jp',
     'sunrise-inc.co.jp'
   ]
+  
   if (exceptionSite.includes(site)) {
     // https://stackoverflow.com/a/33305263
     let exSiteList = exceptionSite.reduce((acc, cur) => {
@@ -221,21 +224,37 @@ async function searchSyoboi() {
     for (const ex of exSiteList) {
       let regexResult = fullUrl.match(new RegExp(`(${ex}[^\/]+)`))?.[1]
       if (regexResult) {
-        site = regexResult
+        site = regexResult // 更新 site 關鍵字
         break
       }
     }
   }
 
+  let syoboiResultUrl = await searchSyoboiByUrl(fullUrl, time);
+  
+  if (!syoboiResultUrl) {
+    syoboiResultUrl = await searchSyoboiByUrl(site, time);
+  }
+
+  return syoboiResultUrl;
+}
+
+
+/**
+ * 根據關鍵字和時間在 Syoboi 上搜尋
+ * @returns { Promise<string> } - 匹配到的 Syoboi 節目 URL，或 ''
+ */
+async function searchSyoboiByUrl(keyword, time) { 
   let searchUrlObj = new URL('https://cal.syoboi.jp/find?sd=0&ch=&st=&cm=&r=0&rd=&v=0')
-  searchUrlObj.searchParams.append('kw', site)
+  searchUrlObj.searchParams.append('kw', keyword)
   let searchUrl = searchUrlObj.toString()
 
   let syoboiHtml = (await GET(searchUrl)).responseText
   let syoboiResults = $($.parseHTML(syoboiHtml)).find('.tframe td')
+  
   for (let result of syoboiResults) {
     let resultTimeEl = $(result).find('.findComment')[0]
-    if (!resultTimeEl) continue; // <--- 增加的防護
+    if (!resultTimeEl) continue; 
     let resultTime = resultTimeEl.innerText
 
     if (time.some(t => resultTime.includes(t))) {
@@ -283,7 +302,7 @@ async function getAllcinema(jpTitle = true) {
 
   let animeName = jpTitle ? bahaData.nameJp : bahaData.nameEn
   if (animeName === '') return null
-  let allcinemaUrl = await google('allcinema', animeName, bahaData.onAirMonth)
+  let allcinemaUrl = await google('allcinema', animeName, bahaData.onAirYearMonth)
   if (!allcinemaUrl) return null
 
   let allcinemaIdMatch = allcinemaUrl.match(/https:\/\/www\.allcinema\.net\/cinema\/([0-9]{1,7})/)
@@ -403,9 +422,14 @@ async function getSyoboi(searchGoogle = false) {
   // 回傳包含 rawHtml 和 h1Title 的物件，供 masterMain() 解析
   changeState('syoboi')
 
-  let animeName = bahaData.nameJp ? bahaData.nameJp : bahaData.nameEn
-  if (animeName === '') return null
-  let syoboiUrl = await (searchGoogle ? google('syoboi', animeName, bahaData.onAirMonth) : searchSyoboi())
+  let syoboiUrl='';
+  if(searchGoogle){
+    let animeName = bahaData.nameJp ? bahaData.nameJp : bahaData.nameEn
+    if (animeName === '') return null
+    syoboiUrl = await (google('syoboi', animeName, bahaData.onAirYearMonth))
+  }else{
+    syoboiUrl = await (searchSyoboi())
+  }
   if (!syoboiUrl) return null
 
   let syoboiHtml = (await GET(syoboiUrl)).responseText
@@ -918,7 +942,7 @@ async function masterMain() {
 
     // 1. [Syoboi-First] 嘗試抓取 Syoboi
     let initialResult
-    if (bahaData.broadcast && bahaData.broadcast.includes('電視')){
+    if (bahaData.broadcast && !bahaData.broadcast.includes('OVA')){
       initialResult = await getSyoboi(false);
       if (!initialResult) {
         initialResult = await getSyoboi(true);
